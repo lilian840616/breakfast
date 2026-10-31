@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>點餐單</title>
+<style>
+:root{--bg:#f7f5f0;--card:#fff;--tx:#1e3932;--mut:#6b7a74;--ac:#00704a;--acl:#d4e9e2;--bd:#e3ded3;--warn:#c0392b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13201c;--card:#1b2d27;--tx:#e8f0ec;--mut:#9bb0a7;--ac:#3fbf8a;--acl:#24493c;--bd:#2c453b;--warn:#ff8a7a}}
+:root[data-theme="dark"]{--bg:#13201c;--card:#1b2d27;--tx:#e8f0ec;--mut:#9bb0a7;--ac:#3fbf8a;--acl:#24493c;--bd:#2c453b;--warn:#ff8a7a}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 2px}h2{font-size:17px;margin:0 0 10px}
+.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+label.f{display:block;font-weight:600;margin-bottom:6px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;font-size:16px;background:var(--bg);color:var(--tx)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
+.tab,.chip{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.on,.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.item{border:1px solid var(--bd);border-radius:12px;padding:10px 12px;cursor:pointer;background:var(--bg);font-size:15px;text-align:left;color:var(--tx);font-family:inherit}
+.item.on{border-color:var(--ac);background:var(--acl);font-weight:600}
+.item small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.opts{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bd)}
+.opts .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.opts .lb{font-size:13px;color:var(--mut);width:44px}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:600;cursor:pointer;width:100%;font-family:inherit}
+.btn:disabled{opacity:.5}
+.ghost{background:none;border:0;color:var(--warn);cursor:pointer;font-size:13px;font-family:inherit}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:480px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:13px}
+.tag{display:inline-block;background:var(--acl);border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
+.stat{display:flex;gap:10px;margin-bottom:12px}
+.stat div{flex:1;background:var(--acl);border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px}
+select{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;font-size:16px;background:var(--bg);color:var(--tx);font-family:inherit}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two label.f{font-size:13px;color:var(--mut)}
+.msg{font-size:14px;margin-top:8px;min-height:20px}
+.muted{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>☕ 點餐單</h1>
+<div class="sub">填完按「送出」，所有人都看得到；可以連續送出多筆（例如幫同事一起訂），每筆都會新增，不會覆蓋；自己的訂單可個別刪除。</div>
+
+<div class="card">
+  <label class="f" for="nm">訂餐人</label>
+  <input type="text" id="nm" placeholder="你的名字" maxlength="20">
+</div>
+
+<div class="card">
+  <h2>🥤 飲料</h2>
+  <label class="f" for="drink">品項</label>
+  <select id="drink"></select>
+  <div class="opts" id="dopts">
+    <div class="two">
+      <div><label class="f" for="sugar">甜度</label><select id="sugar"></select></div>
+      <div><label class="f" for="ice">冰塊</label><select id="ice"></select></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🥪 早餐</h2>
+  <select id="bfast"></select>
+</div>
+
+<button class="btn" id="go">送出訂單</button>
+<div class="msg" id="msg"></div>
+
+<div class="card" style="margin-top:14px">
+  <h2>📋 大家的訂單 <span class="muted" id="cnt"></span></h2>
+  <div class="scroll"><table>
+    <thead><tr><th>訂餐人</th><th>飲料</th><th>甜度／冰塊</th><th>早餐</th><th></th></tr></thead>
+    <tbody id="rows"><tr><td colspan="5" class="muted">載入中…</td></tr></tbody>
+  </table></div>
+</div>
+
+<div class="card">
+  <h2>📊 統計</h2>
+  <div class="stat"><div><b id="s1">0</b>訂餐人數</div><div><b id="s2">0</b>飲料杯數</div><div><b id="s3">0</b>早餐份數</div></div>
+  <div class="scroll"><table>
+    <thead><tr><th>品項</th><th>數量</th><th>明細</th></tr></thead>
+    <tbody id="stats"></tbody>
+  </table></div>
+</div>
+</div>
+
+<script>
+const DRINKS={
+ "咖啡":["美式咖啡","那堤","焦糖瑪奇朵","摩卡","卡布奇諾","馥芮白","冷萃咖啡"],
+ "茶類":["伯爵茶","英式早餐茶","茶拿鐵","抹茶那堤","蜂蜜綠茶","芝麻烏龍"],
+ "星冰樂":["咖啡星冰樂","焦糖星冰樂","抹茶星冰樂","可可碎片星冰樂"],
+ "其他":["熱可可","鮮奶","柳橙汁","氣泡水"]
+};
+const BREAK={
+ "三明治":["黑松露嫩蛋三明治","烤雞生吐司三明治","經典總匯三明治","培根蛋英式麥芬"],
+ "可頌":["起司牛肉可頌","起司里肌可頌"],
+ "帕里尼／軟法":["舒肥雞鮮蔬帕里尼","芋香奶皇肉鬆帕里尼","火腿起司軟法堡","明太子起司軟法"],
+ "司康／甜點":["葡萄乾司康","巧克力司康","肉桂捲"]
+};
+const SUGAR=["正常糖","少糖","半糖","微糖","無糖"];
+const ICE=["正常冰","少冰","微冰","去冰","熱"];
+const NONE="不需要";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function fill(el,list,first){el.innerHTML=(first?`<option value="">${first}</option>`:"")+list.map(v=>`<option>${v}</option>`).join("")}
+function groups(obj){return Object.entries(obj).map(([k,v])=>`<optgroup label="${k}">${v.map(n=>`<option>${n}</option>`).join("")}</optgroup>`).join("")}
+$("drink").innerHTML=`<option value="">${NONE}</option>`+groups(DRINKS);
+$("bfast").innerHTML=`<option value="">${NONE}</option>`+groups(BREAK);
+fill($("sugar"),SUGAR);fill($("ice"),ICE);
+$("sugar").value="半糖";$("ice").value="少冰";
+function sync(){const on=!!$("drink").value;$("dopts").style.opacity=on?1:.4;$("sugar").disabled=!on;$("ice").disabled=!on}
+$("drink").onchange=sync;sync();
+
+let orders=[];
+const me=(()=>{try{let v=localStorage.getItem("order_uid");if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("order_uid",v)}return v}catch(e){return Math.random().toString(36).slice(2)}})();
+async function call(fn,a,b){
+  const H={"Content-Type":"application/json"};let r;
+  if(fn==="listOrders"){r=await fetch("/api/orders");if(!r.ok)throw 0;return r.json()}
+  if(fn==="addOrder")r=await fetch("/api/orders",{method:"POST",headers:H,body:JSON.stringify(a)});
+  if(fn==="deleteOrder")r=await fetch("/api/orders?id="+encodeURIComponent(a)+"&owner="+encodeURIComponent(b),{method:"DELETE"});
+  if(!r.ok)throw 0;
+}
+async function refresh(){
+  try{orders=(await call("listOrders")).map(o=>({...o,_mine:o.owner===me})).sort((a,b)=>(a.t||0)-(b.t||0));showOrders()}
+  catch(e){$("rows").innerHTML='<tr><td colspan="5" class="muted">讀取失敗，請重新整理</td></tr>'}
+}
+function showOrders(){
+  const tb=$("rows");
+  $("cnt").textContent="（"+orders.length+" 筆）";
+  if(!orders.length){tb.innerHTML='<tr><td colspan="5" class="muted">還沒有人訂餐</td></tr>'}
+  else tb.innerHTML=orders.map(o=>`<tr>
+    <td>${esc(o.name)}</td>
+    <td>${o.drink?esc(o.drink):'<span class="muted">—</span>'}</td>
+    <td>${o.drink?`<span class="tag">${esc(o.sugar)}</span><span class="tag">${esc(o.ice)}</span>`:'<span class="muted">—</span>'}</td>
+    <td>${o.bfast?esc(o.bfast):'<span class="muted">—</span>'}</td>
+    <td>${o._mine?`<button class="ghost" data-del="${o.id}">刪除</button>`:""}</td></tr>`).join("");
+  tb.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+    b.disabled=true;
+    try{await call("deleteOrder",b.dataset.del,me);await refresh()}
+    catch(e){$("msg").textContent="刪除失敗"}
+  });
+
+  // 統計
+  const dm={},bm={};let dn=0,bn=0;
+  orders.forEach(o=>{
+    if(o.drink){dn++;const d=dm[o.drink]=dm[o.drink]||{n:0,det:{}};d.n++;
+      const k=o.sugar+"／"+o.ice;d.det[k]=(d.det[k]||0)+1}
+    if(o.bfast){bn++;bm[o.bfast]=(bm[o.bfast]||0)+1}
+  });
+  $("s1").textContent=new Set(orders.map(o=>o.name)).size;$("s2").textContent=dn;$("s3").textContent=bn;
+  const rows=[];
+  Object.entries(dm).sort((a,b)=>b[1].n-a[1].n).forEach(([k,v])=>rows.push(
+    `<tr><td>🥤 ${esc(k)}</td><td><b>${v.n}</b></td><td>${Object.entries(v.det).map(([a,b])=>`<span class="tag">${esc(a)} ×${b}</span>`).join("")}</td></tr>`));
+  Object.entries(bm).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>rows.push(
+    `<tr><td>🥪 ${esc(k)}</td><td><b>${v}</b></td><td></td></tr>`));
+  $("stats").innerHTML=rows.join("")||'<tr><td colspan="3" class="muted">尚無資料</td></tr>';
+}
+
+$("go").onclick=async()=>{
+  const name=$("nm").value.trim(),m=$("msg");
+  if(!name){m.textContent="請先填寫訂餐人。";return}
+  const drink=$("drink").value,bfast=$("bfast").value;
+  if(!drink&&!bfast){m.textContent="飲料和早餐至少選一樣。";return}
+  $("go").disabled=true;
+  try{
+    await call("addOrder",{owner:me,name,drink,sugar:drink?$("sugar").value:"",ice:drink?$("ice").value:"",bfast});await refresh();
+    try{localStorage.setItem("order_name",name)}catch(e){}
+    m.textContent="✅ 已送出！可以繼續填下一筆。";
+  }catch(e){m.textContent="送出失敗："+(e.message||e.code)}
+  $("go").disabled=false;
+};
+try{const n=localStorage.getItem("order_name");if(n)$("nm").value=n}catch(e){}
+
+refresh();setInterval(refresh,8000);
+</script>
+</body>
+</html>
