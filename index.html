@@ -36,6 +36,7 @@ table{width:100%;border-collapse:collapse;font-size:14px;min-width:480px}
 th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd);vertical-align:top}
 th{color:var(--mut);font-weight:600;font-size:13px}
 .tag{display:inline-block;background:var(--acl);border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
+.tag.dim{background:var(--bd);color:var(--mut)}
 .stat{display:flex;gap:10px;margin-bottom:12px}
 .stat div{flex:1;background:var(--acl);border-radius:10px;padding:10px;text-align:center}
 .stat b{display:block;font-size:22px}
@@ -49,141 +50,28 @@ select{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10p
 <body>
 <div class="wrap">
 <h1>☕ 點餐單</h1>
-<div class="sub">填完按「送出」，所有人都看得到；可以連續送出多筆（例如幫同事一起訂），每筆都會新增，不會覆蓋；自己的訂單可個別刪除。</div>
-
+<div class="sub">訂餐已完成，以下為本次訂單。</div>
 <div class="card">
-  <label class="f" for="nm">訂餐人</label>
-  <input type="text" id="nm" placeholder="你的名字" maxlength="20">
-</div>
-
-<div class="card">
-  <h2>🥤 飲料</h2>
-  <label class="f" for="drink">品項</label>
-  <select id="drink"></select>
-  <div class="opts" id="dopts">
-    <div class="two">
-      <div><label class="f" for="sugar">甜度</label><select id="sugar"></select></div>
-      <div><label class="f" for="ice">冰塊</label><select id="ice"></select></div>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h2>🥪 早餐</h2>
-  <select id="bfast"></select>
-</div>
-
-<button class="btn" id="go">送出訂單</button>
-<div class="msg" id="msg"></div>
-
-<div class="card" style="margin-top:14px">
-  <h2>📋 大家的訂單 <span class="muted" id="cnt"></span></h2>
+  <h2>📋 大家的訂單 <span class="muted">（13 筆）</span></h2>
   <div class="scroll"><table>
-    <thead><tr><th>訂餐人</th><th>飲料</th><th>甜度／冰塊</th><th>早餐</th><th></th></tr></thead>
-    <tbody id="rows"><tr><td colspan="5" class="muted">載入中…</td></tr></tbody>
-  </table></div>
-</div>
-
-<div class="card">
-  <h2>📊 統計</h2>
-  <div class="stat"><div><b id="s1">0</b>訂餐人數</div><div><b id="s2">0</b>飲料杯數</div><div><b id="s3">0</b>早餐份數</div></div>
-  <div class="scroll"><table>
-    <thead><tr><th>品項</th><th>數量</th><th>明細</th></tr></thead>
-    <tbody id="stats"></tbody>
+    <thead><tr><th>訂餐人</th><th>飲料</th><th>甜度／冰塊</th><th>早餐</th></tr></thead>
+    <tbody>
+    <tr><td>何家程</td><td>阿里山蜜柚烏龍青茶</td><td><span class="tag">微糖</span><span class="tag">少冰</span></td><td>菠蘿可頌</td></tr>
+    <tr><td>孫妘昀</td><td>醇濃抹茶那堤</td><td><span class="tag">微糖</span><span class="tag">去冰</span></td><td>焗烤法式里肌三明治</td></tr>
+    <tr><td>洪伃汝</td><td>抹茶星冰樂</td><td><span class="tag">微糖</span><span class="tag">微冰</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>陳筠欣</td><td>可可碎片星冰樂</td><td><span class="tag">半糖</span><span class="tag">少冰</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>陳羿甄</td><td>伯爵茶那堤</td><td><span class="tag">微糖</span><span class="tag">少冰</span></td><td>雙起司軟歐麵包</td></tr>
+    <tr><td>王佳婷</td><td>福吉茶那堤</td><td><span class="tag">無糖</span><span class="tag">微冰</span></td><td>櫛瓜培根麥芬堡</td></tr>
+    <tr><td>彭欣儀</td><td>福吉茶那堤</td><td><span class="tag">無糖</span><span class="tag">微冰</span></td><td>櫛瓜培根麥芬堡</td></tr>
+    <tr><td>陳雅馨</td><td>可可碎片星冰樂</td><td><span class="tag">微糖</span><span class="tag">微冰</span></td><td>櫛瓜培根麥芬堡</td></tr>
+    <tr><td>施怡雯</td><td>那堤</td><td><span class="tag">無糖</span><span class="tag">熱</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>BOSS</td><td>那堤</td><td><span class="tag">無糖</span><span class="tag">熱</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>小潔</td><td>抹茶星冰樂</td><td><span class="tag">微糖</span><span class="tag">少冰</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>林惠真</td><td>那堤</td><td><span class="tag">無糖</span><span class="tag">少冰</span></td><td>煙燻牛肉起司軟法堡</td></tr>
+    <tr><td>何奕霆</td><td class="muted">美式咖啡</td><td><span class="tag dim">無糖</span><span class="tag dim">微冰</span></td><td><span class="muted">待確認</span></td></tr>
+    </tbody>
   </table></div>
 </div>
 </div>
-
-<script>
-const DRINKS={
- "咖啡":["美式咖啡","那堤","焦糖瑪奇朵","摩卡","卡布奇諾"],
- "茶那堤":["伯爵茶那堤","福吉茶那堤","經典紅茶那堤","醇濃抹茶那堤","玫瑰蜜香茶那堤"],
- "熱茶":["洋甘菊花草茶","英式紅茶","熱蜜柚紅茶","阿里山烏龍茶"],
- "冰茶":["蜜柚檸檬果茶","冰阿里山烏龍茶","冰搖紅茶","冰搖檸檬果茶","阿里山蜜柚烏龍青茶","冰蜜柚紅茶","冰搖檸檬紅茶"],
- "星冰樂":["咖啡星冰樂","焦糖星冰樂","抹茶星冰樂","可可碎片星冰樂"],
- "其他":["經典巧克力（熱）","冰經典巧克力","柳橙汁"]
-};
-const BREAK={
- "三明治":["地瓜核果三明治","櫛瓜培根麥芬堡","焗烤法式里肌三明治"],
- "可頌":["菠蘿可頌"],
- "帕里尼／軟法":["芋見肉鬆奶油帕里尼","煙燻牛肉起司軟法堡"],
- "麵包":["法式明太子麵包","雙起司軟歐麵包","海鹽奶油捲"]
-};
-const SUGAR=["正常糖","少糖","半糖","微糖","無糖"];
-const ICE=["正常冰","少冰","微冰","去冰","熱"];
-const NONE="不需要";
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function fill(el,list,first){el.innerHTML=(first?`<option value="">${first}</option>`:"")+list.map(v=>`<option>${v}</option>`).join("")}
-function groups(obj){return Object.entries(obj).map(([k,v])=>`<optgroup label="${k}">${v.map(n=>`<option>${n}</option>`).join("")}</optgroup>`).join("")}
-$("drink").innerHTML=`<option value="">${NONE}</option>`+groups(DRINKS);
-$("bfast").innerHTML=`<option value="">${NONE}</option>`+groups(BREAK);
-fill($("sugar"),SUGAR);fill($("ice"),ICE);
-$("sugar").value="半糖";$("ice").value="少冰";
-function sync(){const on=!!$("drink").value;$("dopts").style.opacity=on?1:.4;$("sugar").disabled=!on;$("ice").disabled=!on}
-$("drink").onchange=sync;sync();
-
-let orders=[];
-const me=(()=>{try{let v=localStorage.getItem("order_uid");if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("order_uid",v)}return v}catch(e){return Math.random().toString(36).slice(2)}})();
-async function call(fn,a,b){
-  const H={"Content-Type":"application/json"};let r;
-  if(fn==="listOrders"){r=await fetch("/api/orders");if(!r.ok)throw 0;return r.json()}
-  if(fn==="addOrder")r=await fetch("/api/orders",{method:"POST",headers:H,body:JSON.stringify(a)});
-  if(fn==="deleteOrder")r=await fetch("/api/orders?id="+encodeURIComponent(a)+"&owner="+encodeURIComponent(b),{method:"DELETE"});
-  if(!r.ok)throw 0;
-}
-async function refresh(){
-  try{orders=(await call("listOrders")).map(o=>({...o,_mine:o.owner===me})).sort((a,b)=>(a.t||0)-(b.t||0));showOrders()}
-  catch(e){$("rows").innerHTML='<tr><td colspan="5" class="muted">讀取失敗，請重新整理</td></tr>'}
-}
-function showOrders(){
-  const tb=$("rows");
-  $("cnt").textContent="（"+orders.length+" 筆）";
-  if(!orders.length){tb.innerHTML='<tr><td colspan="5" class="muted">還沒有人訂餐</td></tr>'}
-  else tb.innerHTML=orders.map(o=>`<tr>
-    <td>${esc(o.name)}</td>
-    <td>${o.drink?esc(o.drink):'<span class="muted">—</span>'}</td>
-    <td>${o.drink?`<span class="tag">${esc(o.sugar)}</span><span class="tag">${esc(o.ice)}</span>`:'<span class="muted">—</span>'}</td>
-    <td>${o.bfast?esc(o.bfast):'<span class="muted">—</span>'}</td>
-    <td>${o._mine?`<button class="ghost" data-del="${o.id}">刪除</button>`:""}</td></tr>`).join("");
-  tb.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
-    b.disabled=true;
-    try{await call("deleteOrder",b.dataset.del,me);await refresh()}
-    catch(e){$("msg").textContent="刪除失敗"}
-  });
-
-  // 統計
-  const dm={},bm={};let dn=0,bn=0;
-  orders.forEach(o=>{
-    if(o.drink){dn++;const d=dm[o.drink]=dm[o.drink]||{n:0,det:{}};d.n++;
-      const k=o.sugar+"／"+o.ice;d.det[k]=(d.det[k]||0)+1}
-    if(o.bfast){bn++;bm[o.bfast]=(bm[o.bfast]||0)+1}
-  });
-  $("s1").textContent=new Set(orders.map(o=>o.name)).size;$("s2").textContent=dn;$("s3").textContent=bn;
-  const rows=[];
-  Object.entries(dm).sort((a,b)=>b[1].n-a[1].n).forEach(([k,v])=>rows.push(
-    `<tr><td>🥤 ${esc(k)}</td><td><b>${v.n}</b></td><td>${Object.entries(v.det).map(([a,b])=>`<span class="tag">${esc(a)} ×${b}</span>`).join("")}</td></tr>`));
-  Object.entries(bm).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>rows.push(
-    `<tr><td>🥪 ${esc(k)}</td><td><b>${v}</b></td><td></td></tr>`));
-  $("stats").innerHTML=rows.join("")||'<tr><td colspan="3" class="muted">尚無資料</td></tr>';
-}
-
-$("go").onclick=async()=>{
-  const name=$("nm").value.trim(),m=$("msg");
-  if(!name){m.textContent="請先填寫訂餐人。";return}
-  const drink=$("drink").value,bfast=$("bfast").value;
-  if(!drink&&!bfast){m.textContent="飲料和早餐至少選一樣。";return}
-  $("go").disabled=true;
-  try{
-    await call("addOrder",{owner:me,name,drink,sugar:drink?$("sugar").value:"",ice:drink?$("ice").value:"",bfast});await refresh();
-    try{localStorage.setItem("order_name",name)}catch(e){}
-    m.textContent="✅ 已送出！可以繼續填下一筆。";
-  }catch(e){m.textContent="送出失敗："+(e.message||e.code)}
-  $("go").disabled=false;
-};
-try{const n=localStorage.getItem("order_name");if(n)$("nm").value=n}catch(e){}
-
-refresh();setInterval(refresh,8000);
-</script>
 </body>
 </html>
